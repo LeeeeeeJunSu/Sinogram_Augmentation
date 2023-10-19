@@ -39,8 +39,8 @@ class engine():
 
         criterionL1 = nn.L1Loss().cuda()
         criterionMSE = nn.MSELoss().cuda()
-        g_optimizer = optim.Adam(self.parameters(), lr=learningRate, betas=betas)
-        d_optimizer = optim.Adam(self.parameters(), lr=learningRate, betas=betas)
+        g_optimizer = optim.Adam(self.G.parameters(), lr=learningRate, betas=betas)
+        d_optimizer = optim.Adam(self.D.parameters(), lr=learningRate, betas=betas)
 
         train_dataset = CustomDataset.Dataset_Train(trainFolder, delete_zero)
         train_loader = DataLoader(dataset=train_dataset, batch_size=batchSize, shuffle=True)
