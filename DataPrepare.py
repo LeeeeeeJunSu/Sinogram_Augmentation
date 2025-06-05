@@ -1,3 +1,5 @@
+"""데이터 준비 스크립트."""
+
 import os
 import numpy as np
 import shutil
@@ -17,39 +19,27 @@ TestFolderName = "Test\\"
 ValidationFolderName = "Validation\\"
 TrainFolderName = "Train\\"
 
-# 저장 경로 생성
-if not os.path.exists(DeepLearningPath):
-    os.makedirs(DeepLearningPath)
-if not os.path.exists(Path360To720):
-    os.makedirs(Path360To720)
-if not os.path.exists(Path180To720):
-    os.makedirs(Path180To720)
-if not os.path.exists(Path90To720):
-    os.makedirs(Path90To720)
-if not os.path.exists(Path360To720 + AllFolderName):
-    os.makedirs(Path360To720 + AllFolderName)
-if not os.path.exists(Path360To720 + TestFolderName):
-    os.makedirs(Path360To720 + TestFolderName)
-if not os.path.exists(Path360To720 + ValidationFolderName):
-    os.makedirs(Path360To720 + ValidationFolderName)
-if not os.path.exists(Path360To720 + TrainFolderName):
-    os.makedirs(Path360To720 + TrainFolderName)
-if not os.path.exists(Path180To720 + AllFolderName):
-    os.makedirs(Path180To720 + AllFolderName)
-if not os.path.exists(Path180To720 + TestFolderName):
-    os.makedirs(Path180To720 + TestFolderName)
-if not os.path.exists(Path180To720 + ValidationFolderName):
-    os.makedirs(Path180To720 + ValidationFolderName)
-if not os.path.exists(Path180To720 + TrainFolderName):
-    os.makedirs(Path180To720 + TrainFolderName)
-if not os.path.exists(Path90To720 + AllFolderName):
-    os.makedirs(Path90To720 + AllFolderName)
-if not os.path.exists(Path90To720 + TestFolderName):
-    os.makedirs(Path90To720 + TestFolderName)
-if not os.path.exists(Path90To720 + ValidationFolderName):
-    os.makedirs(Path90To720 + ValidationFolderName)
-if not os.path.exists(Path90To720 + TrainFolderName):
-    os.makedirs(Path90To720 + TrainFolderName)
+# 저장 경로 생성 함수
+def ensure_directories(paths):
+    """주어진 경로 목록을 모두 생성한다."""
+    for path in paths:
+        os.makedirs(path, exist_ok=True)
+
+
+ensure_directories([
+    DeepLearningPath,
+    Path360To720,
+    Path180To720,
+    Path90To720,
+])
+
+for base in (Path360To720, Path180To720, Path90To720):
+    ensure_directories([
+        base + AllFolderName,
+        base + TestFolderName,
+        base + ValidationFolderName,
+        base + TrainFolderName,
+    ])
 
 '''
 for volName in lstVolume:
@@ -81,34 +71,34 @@ for volName in lstVolume:
             print(volName + " " + str(i) + " is skipped - Label Mean Intensity is " + str(np.mean(LabelSlice)))
 '''
 
-lstLabel = os.listdir(Path360To720 + AllFolderName)
-lstLabel = [f for f in lstLabel if f.endswith("_Label.raw")]
-np.random.shuffle(lstLabel)
-nTotal = len(lstLabel)
-nTest = int(nTotal * 0.1)
-nValidation = int(nTotal * 0.2)
-nTrain = nTotal - nTest - nValidation
-lstTest = lstLabel[:nTest]
-lstValidation = lstLabel[nTest:nTest+nValidation]
-lstTrain = lstLabel[nTest+nValidation:]
-for Test in lstTest:
-    shutil.copy(Path360To720 + AllFolderName + Test.replace("_Label.raw", "_Input.raw"), Path360To720 + TestFolderName + Test.replace("_Label.raw", "_Input.raw"))
-    shutil.copy(Path180To720 + AllFolderName + Test.replace("_Label.raw", "_Input.raw"), Path180To720 + TestFolderName + Test.replace("_Label.raw", "_Input.raw"))
-    shutil.copy(Path90To720 + AllFolderName + Test.replace("_Label.raw", "_Input.raw"), Path90To720 + TestFolderName + Test.replace("_Label.raw", "_Input.raw"))
-    shutil.copy(Path360To720 + AllFolderName + Test, Path360To720 + TestFolderName + Test)
-    shutil.copy(Path360To720 + AllFolderName + Test, Path180To720 + TestFolderName + Test)
-    shutil.copy(Path360To720 + AllFolderName + Test, Path90To720 + TestFolderName + Test)
-for Validation in lstValidation:
-    shutil.copy(Path360To720 + AllFolderName + Validation.replace("_Label.raw", "_Input.raw"), Path360To720 + ValidationFolderName + Validation.replace("_Label.raw", "_Input.raw"))
-    shutil.copy(Path180To720 + AllFolderName + Validation.replace("_Label.raw", "_Input.raw"), Path180To720 + ValidationFolderName + Validation.replace("_Label.raw", "_Input.raw"))
-    shutil.copy(Path90To720 + AllFolderName + Validation.replace("_Label.raw", "_Input.raw"), Path90To720 + ValidationFolderName + Validation.replace("_Label.raw", "_Input.raw"))
-    shutil.copy(Path360To720 + AllFolderName + Validation, Path360To720 + ValidationFolderName + Validation)
-    shutil.copy(Path360To720 + AllFolderName + Validation, Path180To720 + ValidationFolderName + Validation)
-    shutil.copy(Path360To720 + AllFolderName + Validation, Path90To720 + ValidationFolderName + Validation)
-for Train in lstTrain:
-    shutil.copy(Path360To720 + AllFolderName + Train.replace("_Label.raw", "_Input.raw"), Path360To720 + TrainFolderName + Train.replace("_Label.raw", "_Input.raw"))
-    shutil.copy(Path180To720 + AllFolderName + Train.replace("_Label.raw", "_Input.raw"), Path180To720 + TrainFolderName + Train.replace("_Label.raw", "_Input.raw"))
-    shutil.copy(Path90To720 + AllFolderName + Train.replace("_Label.raw", "_Input.raw"), Path90To720 + TrainFolderName + Train.replace("_Label.raw", "_Input.raw"))
-    shutil.copy(Path360To720 + AllFolderName + Train, Path360To720 + TrainFolderName + Train)
-    shutil.copy(Path360To720 + AllFolderName + Train, Path180To720 + TrainFolderName + Train)
-    shutil.copy(Path360To720 + AllFolderName + Train, Path90To720 + TrainFolderName + Train)
+def split_dataset():
+    """학습, 검증, 테스트 데이터셋을 분리한다."""
+    lst_label = [f for f in os.listdir(Path360To720 + AllFolderName) if f.endswith("_Label.raw")]
+    np.random.shuffle(lst_label)
+    n_total = len(lst_label)
+    n_test = int(n_total * 0.1)
+    n_validation = int(n_total * 0.2)
+    lst_test = lst_label[:n_test]
+    lst_validation = lst_label[n_test:n_test + n_validation]
+    lst_train = lst_label[n_test + n_validation:]
+
+    def _copy_files(file_list, dst_folder):
+        for name in file_list:
+            shutil.copy(Path360To720 + AllFolderName + name.replace("_Label.raw", "_Input.raw"), dst_folder + name.replace("_Label.raw", "_Input.raw"))
+            shutil.copy(Path360To720 + AllFolderName + name, dst_folder + name)
+            shutil.copy(Path180To720 + AllFolderName + name.replace("_Label.raw", "_Input.raw"), dst_folder.replace(Path360To720, Path180To720) + name.replace("_Label.raw", "_Input.raw"))
+            shutil.copy(Path90To720 + AllFolderName + name.replace("_Label.raw", "_Input.raw"), dst_folder.replace(Path360To720, Path90To720) + name.replace("_Label.raw", "_Input.raw"))
+            shutil.copy(Path180To720 + AllFolderName + name, dst_folder.replace(Path360To720, Path180To720) + name)
+            shutil.copy(Path90To720 + AllFolderName + name, dst_folder.replace(Path360To720, Path90To720) + name)
+
+    _copy_files(lst_test, Path360To720 + TestFolderName)
+    _copy_files(lst_validation, Path360To720 + ValidationFolderName)
+    _copy_files(lst_train, Path360To720 + TrainFolderName)
+
+
+def main():
+    split_dataset()
+
+
+if __name__ == "__main__":
+    main()
