@@ -1,3 +1,5 @@
+"""U-Net 기반 모델을 학습하기 위한 엔진."""
+
 import os
 import time
 import random
